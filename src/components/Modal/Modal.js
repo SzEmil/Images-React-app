@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import css from './Modal.module.css';
 import { PropTypes } from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 export const Modal = ({ modalProp, onClick, onKeyDown }) => {
   const handleModalCLick = event => {
@@ -13,11 +13,14 @@ export const Modal = ({ modalProp, onClick, onKeyDown }) => {
     }
   };
 
-  const handleCloseModal = event => {
-    if (event.code === 'Escape') {
-      return onKeyDown(true);
-    }
-  };
+  const handleCloseModal = useCallback(
+    event => {
+      if (event.code === 'Escape') {
+        return onKeyDown(true);
+      }
+    },
+    [onKeyDown]
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleCloseModal);
@@ -25,7 +28,7 @@ export const Modal = ({ modalProp, onClick, onKeyDown }) => {
     return () => {
       document.removeEventListener('keydown', handleCloseModal);
     };
-  }, []);
+  }, [handleCloseModal]);
 
   return (
     <>
